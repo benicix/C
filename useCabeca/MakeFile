@@ -1,0 +1,4 @@
+encrypt.o: encrypt.c
+	gcc -c encrypt.c mv encrypt.o /home/benicio/c/ArquivosObjetoC
+checksum.o:checksum.c
+	gcc -c checksum.c mv checksum.o /home/benicio/c/ArquivosObjetoC
