@@ -1,0 +1,4 @@
+teste.cpp: In function ‘int main()’:
+teste.cpp:7:1: error: expected ‘}’ at end of input
+ }
+ ^
