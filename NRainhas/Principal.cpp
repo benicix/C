@@ -1,175 +1,86 @@
 #include<iostream>
-#include<regex>
-#include<list>
-#include<iterator>
-#include<unistd.h>
-struct localizacao{
-    int linha,coluna;
-};
-
-//declarando funções
-void posicionandoRainhas(int linha, int coluna);
-void mostraRainhas();
-void zerarTabuleiro();
-localizacao capturarLocalizacao(int linha, int coluna);
-
-int Tabuleiro[8][8];
-int Rainhas[8];
-
+#include<vector>
 using namespace std;
+void executar(vector<vector<int>> &tab, int N, int coluna);
+bool verificaPosicoes(vector<vector<int>> &tabuleiro, int N,int linha, int coluna);
 
+
+int Rainhas=0;
+int solucao=0;
 int main(){
     
-    
-    
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            zerarTabuleiro();
-            capturarLocalizacao(i,j);
-        }
-        
-    }
-       
-    mostraRainhas();
-}
-localizacao capturarLocalizacao(int linha, int coluna){
-    
-    
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            if(linha==i &&coluna==j){
-                
-                posicionandoRainhas(i,j);
-            }
-        }
-        
+    int N=8;
+    vector<vector<int>> tab;
+    for(int i=0;i<N;i++){
+        vector<int> aux(N);
+        tab.push_back(aux);
     }
     
-}
+    executar(tab, N,0);
+    cout<<"total de soluções é "<< solucao<<endl;
+    
 
-void zerarTabuleiro(){
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            Tabuleiro[i][j]=99;
-        }
-        Rainhas[i]=i;
-    }
 }
-void mostraRainhas(){
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            
-            if(Tabuleiro[i][j]==1){
-                cout<<"1 ";
-            }else if(Tabuleiro[i][j]==0){
-                cout<<"0 ";
-            }else if(Tabuleiro[i][j]==2){
-                cout<<"2 ";
-            }else if(Tabuleiro[i][j]==3){
-                cout<<"3 ";
-            }else if(Tabuleiro[i][j]==4){
-                cout<<"4 ";
-            }else if(Tabuleiro[i][j]==5){
-                cout<<"5 ";
-            }else if(Tabuleiro[i][j]==6){
-                cout<<"6 ";
-            }else if(Tabuleiro[i][j]==7){
-                cout<<"7 ";
-            }else{ 
-                cout<<"* ";
-            }
-            
-
-        }
-        cout<<endl;
+void executar(vector<vector<int>> &tab, int N, int coluna){
+    if(coluna ==N){
+        solucao++;
+        
+        Rainhas=0;
+        return;
     }
-    sleep(1);
-    system("clear");
+    for (int i = 0; i < N; i++)
+    {
+        if(verificaPosicoes(tab, N,i,coluna)){
+            tab[i][coluna]=1;
+            executar(tab, N, coluna+1);
+            tab[i][coluna]=0;
+        }
+    }
+    
+    
+    
 }
 
-void posicionandoRainhas(int linha, int coluna){
-    int cont=1;
-    if(Tabuleiro[linha][coluna]==99){
-        Tabuleiro[linha][coluna]=Rainhas[0];
-        //cout<<i<<endl;
-        for (int k = 0; k < 8; k++)
-        {
-            
-            Tabuleiro[linha][k]=Rainhas[0];
-            Tabuleiro[k][coluna]=Rainhas[0];
-            if((coluna+k) <8  && (k+ linha) <8){
-                Tabuleiro[k+linha][k+coluna]=Rainhas[0];
-            }
-            if(coluna-k > -1 && k+linha<8){
-                Tabuleiro[k+linha][coluna-k]=Rainhas[0];
-            }if (linha-k >-1 && coluna+k<8){
-                 Tabuleiro[linha-k][coluna+k]=Rainhas[0];
-            }if ((linha-k) > -1 && coluna-k > -1){
-                 Tabuleiro[linha-k][coluna-k]=Rainhas[0];
-            }
-                mostraRainhas();
+bool verificaPosicoes(vector<vector<int>> &tabuleiro, int N,int linha, int coluna){
+    int i,j;
+    for ( i = 0; i < N; i++)
+    {
+        if(tabuleiro[i][coluna]==1){
+            return false;
         }
     }
-    for (int i = 0; i < 8; i++)
+    for ( i = 0; i < N; i++)
     {
-        for (int j = 0; j < 8; j++)
-        {
-            
-                if(Tabuleiro[i][j]==99){
-                    Tabuleiro[i][j]=Rainhas[cont];
-                    //cout<<i<<endl;
-                    for (int k = 0; k < 8; k++)
-                    {
-                        
-                        Tabuleiro[i][k]=Rainhas[cont];
-                        Tabuleiro[k][j]=Rainhas[cont];
-                        if((j+k) <8  && (k+ i) <8){
-                            Tabuleiro[k+i][k+j]=Rainhas[cont];
-                        }
-                        if(j-k > -1 && k+i<8){
-                            Tabuleiro[k+i][j-k]=Rainhas[cont];
-                            cout<<k+i<<j-k<<endl;
-                        }if (i-k >-1 && j+k<8){
-                             Tabuleiro[i-k][j+k]=Rainhas[cont];
-                        }if ((i-k) > -1 && j-k > -1){
-                             Tabuleiro[i-k][j-k]=Rainhas[cont];
-                        }
-                        cout<<i+1<<endl;
-                        mostraRainhas();
-
-                    }
-                    cont++;
-                    i=0,j=0;
-                }
-            
+        if(tabuleiro[linha][i]==1){
+            return false;
         }
-        
-        
     }
-    /*/for (linha; linha < 8; linha++)
+    for ( i = linha, j=coluna; i >=0 && j>=0 ; i--,j--)
     {
-        for (coluna; coluna < 8; coluna++)
-        {
-            if(coluna<8){
-                zerarTabuleiro();
-                coluna++;
-                posicionandoRainhas(linha, coluna);
-            }else if(linha<8){
-                coluna=0;
-                linha++;
-                zerarTabuleiro();
-                posicionandoRainhas(linha,coluna);
-            }
+        if(tabuleiro[i][j]==1){
+            return false;
         }
-    }*/
+    }
+    for ( i = linha, j=coluna; i <N && j<N ; i++,j++)
+    {
+        if(tabuleiro[i][j]==1){
+            return false;
+        }
+    }
+    for ( i = linha, j=coluna; i <N && j>=0 ; i++,j--)
+    {
+        if(tabuleiro[i][j]==1){
+            return false;
+        }
+    }
+    for ( i = linha, j=coluna; i >=0 && j<N ; i--,j++)
+    {
+        if(tabuleiro[i][j]==1){
+            return false;
+        }
+    }
+    return true;
+    
     
     
 }
